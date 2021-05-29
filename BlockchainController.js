@@ -118,6 +118,23 @@ class BlockchainController {
         });
     }
 
+    validateChain() {
+        this.app.get("/validateChain", async (req, res) => {
+                try {
+                    let validate = await this.blockchain.validateChain();
+                    if(validate){
+                        return res.status(200).json(validate);
+                    } else {
+                        return res.status(404).send("blocks cannot be validated!");
+                    }
+                } catch (error) {
+                    return res.status(500).send("An error happened!");
+                }
+          
+            
+        });
+    }
+
 }
 
 module.exports = (app, blockchainObj) => { return new BlockchainController(app, blockchainObj);}

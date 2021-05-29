@@ -128,13 +128,17 @@ class Blockchain {
                 let block = new BlockClass.Block({address: address, message: message, signature: signature, star: star});
                 console.log('add the block')
                    self._addBlock(block);
+                   if(this.validateChain()){
+                    console.log('block validated');
                     resolve(block);
+                   }else{
+                    console.log('block cannot be validated');
+                    reject(block); 
+                   }
             }else{
             console.log('reject the block')
                 reject(block);
             }
-
-
             }else{
             reject(new Error("time is more than 5 mins"))
 

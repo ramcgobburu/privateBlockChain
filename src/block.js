@@ -61,14 +61,15 @@ class Block {
 
             // Parse the data to an object to be retrieve.
             const block = JSON.parse(decodedData);
+            console.log("jsdhagfhsdvf"+ block);
+            console.log("dhfbjhsdfh ->"+block.data)
     return new Promise((resolve,reject) =>{
 
-        let deco = JSON.parse(hex2ascii(self.body));
         if(block.data == 'Genesis Block'){
         console.log('its a genesis block')
         reject('rejected the block');
         }else{
-        console.log("resolved block");
+        console.log("resolved block"+ block.data);
         resolve(block);
         }
 

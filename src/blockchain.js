@@ -61,23 +61,28 @@ class Blockchain {
      * Note: the symbol `_` in the method name indicates in the javascript convention 
      * that this method is a private method. 
      */
-    _addBlock(block) {
+     _addBlock(block) {
         let self = this;
         return new Promise(async (resolve, reject) => {
-        block.height = this.chain.length;
-        block.time = new Date().getTime().toString().slice(0,-3);
-        if (this.chain.length>0) {
-              // previous block hash
-              block.previousBlockHash = this.chain[this.chain.length-1].hash;
+            // set height
+            block.height = self.height + 1;
+            // set timestamp
+            block.time = new Date().getTime().toString().slice(0,-3);
+            if(self.height == -1) { // special genesis block case
+                block.previousBlockHash = null;
+            } else {
+                // set previous block hash
+                block.previousBlockHash = this.hash;
             }
-            // SHA256 requires a string of data
+            // set current block hash
             block.hash = SHA256(JSON.stringify(block)).toString();
-            // add block to chain
-            this.chain.push(block);
-
+            // push block on to blockchain
+            self.chain.push(block);
+            // update blockchain height
+            this.height += 1;
             resolve(block);
-
         });
+        //TODO: _addBlock complete
     }
 
     /**
@@ -122,7 +127,7 @@ class Blockchain {
             if(bool){
                 let block = new BlockClass.Block({address: address, message: message, signature: signature, star: star});
                 console.log('add the block')
-                   this._addBlock(block);
+                   self._addBlock(block);
                     resolve(block);
             }else{
             console.log('reject the block')
@@ -186,9 +191,11 @@ class Blockchain {
         return new Promise((resolve, reject) => {
             self.chain.forEach(async(b)=>{
             let blockData = await b.getBData();
-            if(blockData.address ==address) results.push(blockData);
+            console.log("block date ->"+blockData.address);
+            if(blockData.address ==address) stars.push(blockData);
+                
             });
-            resolve(results);
+            resolve(stars);
             
         });
     }

@@ -128,13 +128,12 @@ class Blockchain {
                 let block = new BlockClass.Block({address: address, message: message, signature: signature, star: star});
                 console.log('add the block')
                    self._addBlock(block);
-                   if(await self.validateChain()){
-                    console.log('block validated');
-                    resolve(block);
-                   }else{
-                    errorLog.push({   error: 'Block validation failed' })  
-                    reject(block); 
-                   }
+                   const errorLog = await self.validateChain();
+                   if(errorLog.length !== 0){         
+                         resolve({message: "Validation failed", error: errorLog, status: false}); 
+                       }                
+                       console.log("len is ", errorLog)
+                    resolve (blocks)
             }else{
             console.log('reject the block')
                 reject(block);

@@ -38,10 +38,12 @@ class Block {
     validate() {
         let self = this;
         return new Promise((resolve, reject) => {
-            let hash = self.hash;
+            let currentHash = self.hash;
+            self.hash=null;          
                 let hash1 = SHA256(JSON.stringify(self)).toString();
+                self.hash = currentHash;
             // Save in auxiliary variable the current block hash
-               if(hash1==hash){
+               if(hash1==currentHash){
                resolve(true)
                 }else{
                 reject(false)
@@ -61,8 +63,6 @@ class Block {
 
             // Parse the data to an object to be retrieve.
             const block = JSON.parse(decodedData);
-            console.log("jsdhagfhsdvf"+ block);
-            console.log("dhfbjhsdfh ->"+block.data)
     return new Promise((resolve,reject) =>{
 
         if(block.data == 'Genesis Block'){
@@ -72,8 +72,6 @@ class Block {
         console.log("resolved block"+ block.data);
         resolve(block);
         }
-
-
 
         });
         // Getting the encoded data saved in the Block

@@ -72,7 +72,7 @@ class Blockchain {
                 block.previousBlockHash = null;
             } else {
                 // set previous block hash
-                block.previousBlockHash = this.hash;
+                block.previousBlockHash = self.chain[block.height - 1].hash;
             }
             // set current block hash
             block.hash = SHA256(JSON.stringify(block)).toString();
@@ -194,10 +194,15 @@ class Blockchain {
         let stars = [];
         return new Promise((resolve, reject) => {
             self.chain.forEach(async(b)=>{
+                try{
             let blockData = await b.getBData();
             console.log("block date ->"+blockData.address);
             if(blockData.address ==address) stars.push(blockData);
-                
+                }catch(e){
+                    console.log('error:', e);
+                     reject(stars);   
+
+                } 
             });
             resolve(stars);
             
@@ -214,9 +219,11 @@ class Blockchain {
         let self = this;
         let errorLog = [];
         return new Promise(async (resolve, reject) => {
-           self.chain.forEach(block => {
-                        if(!block.validate()){
+           self.chain.forEach(async(block) => {
+                        if(!await block.validate()){
+                            if(block.previousBlockHash!=block.hash){
                             errorLog.push(block);
+                            }
                         }
                     });
                     resolve(errorLog)
